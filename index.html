@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Guess the word</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="healthbar">
+    <p id="health1" class="gronn"></p>
+    <p id="health2" class="gronn"></p>
+    <p id="health3" class="gronn"></p>
+    <p id="health4" class="gronn"></p>
+    <p id="health5" class="gronn"></p>
+</div>
+<p id="bokstaver"></p>
+<input type="text" placeholder="Skriv inn en bokstav" maxlength="1" style="width: 10%;" id="bokstav">
+<button id="bokstavBtn" style="width: 15%;" onclick="faaValue()">Sjekk bokstav</button>
+<p id="beskjed"></p>
+<p id="beskjed2"></p>
+<p id="beskjed3"></p>
+</body>
+</html>
+
+<script>
+    let losningsord = ["B","E","R","G","E","N"];
+    let gjettetBokstaver = [];
+    let riktigGjettet = [];
+    let feilGjettet = 0;
+    let input;
+    let bokstavBtnEl = document.querySelector("#bokstavBtn");
+    bokstavBtnEl.addEventListener("click", sjekkBokstaver2);
+    bokstavBtnEl.addEventListener("click", vinnEllerTap);
+
+    function array() {
+        for (let b = 0; b < losningsord.length; b++) {
+            riktigGjettet.push("_");
+            document.getElementById("bokstaver").innerText = riktigGjettet.join(" ");
+            document.getElementById("bokstaver").style.fontSize = 40+"px";
+            document.getElementById("bokstaver").style.fontFamily = "Arial";
+            document.getElementById("beskjed2").innerText = "Antall bokstaver i løsningsordet er: "+losningsord.length;
+        }
+    }
+    array()
+    console.log(riktigGjettet);
+
+    function faaValue() {
+        input = document.getElementById("bokstav").value;
+        input = input.toUpperCase();
+    }
+
+    function sjekkBokstaver2() {
+        for (let i = 0; i < losningsord.length; i++) {
+            if (losningsord[i] === input) {
+                riktigGjettet[i] = input;
+                document.getElementById("bokstaver").innerText = riktigGjettet.join(" ");
+            }
+
+        }
+        for (let j = 0; j < gjettetBokstaver.length; j++) {
+            if (input === gjettetBokstaver[j]) {
+                console.log("Dette har du allerede gjettet");
+                gjettetBokstaver.pop(gjettetBokstaver[j]);
+            }
+        }
+        let feilGjettetSjekk = losningsord.includes(input);
+        if (feilGjettetSjekk == false) {
+            feilGjettet++;
+        }
+        gjettetBokstaver.push(input);
+        gjettetBokstaver.sort(function (a, b) {
+            if (a > b) {
+                return 1;
+            }
+            if (b > a) {
+                return -1;
+            }
+            return 0;
+        });
+        document.getElementById("beskjed3").innerText = "Du har gjettet "+gjettetBokstaver.length+" bokstav(er): "+gjettetBokstaver.join(" ");
+    }
+
+    function vinnEllerTap() {
+        let riktigOrd = riktigGjettet.join("");
+        let riktiglosningsord = losningsord.join("");
+        if (feilGjettet === 1) {
+            document.getElementById("health1").classList.remove("gronn");
+            document.getElementById("health1").classList.add("rod");
+        }
+        if (feilGjettet === 2) {
+            document.getElementById("health2").classList.remove("gronn");
+            document.getElementById("health2").classList.add("rod");
+        }
+        if (feilGjettet === 3) {
+            document.getElementById("health3").classList.remove("gronn");
+            document.getElementById("health3").classList.add("rod");
+        }
+        if (feilGjettet === 4) {
+            document.getElementById("health4").classList.remove("gronn");
+            document.getElementById("health4").classList.add("rod");
+        }
+        if (feilGjettet === 5) {
+            document.getElementById("health5").classList.remove("gronn");
+            document.getElementById("health5").classList.add("rod");
+            document.getElementById("beskjed").innerText = "Du tapte";
+        }
+        if (riktigOrd === riktiglosningsord) {
+            document.getElementById("beskjed").innerText = "Du vant";
+        }
+    }
+</script>
